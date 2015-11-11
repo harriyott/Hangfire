@@ -139,7 +139,7 @@ namespace Hangfire.SqlServer
 #pragma warning restore 618
         {
             yield return new ExpirationManager(this, _options.JobExpirationCheckInterval);
-            yield return new CountersAggregator(this, _options.CountersAggregateInterval);
+            yield return new CountersAggregator(this, _options.CountersAggregateInterval, SqlServerSettings);
         }
 
         public override void WriteOptionsToLog(ILog logger)
