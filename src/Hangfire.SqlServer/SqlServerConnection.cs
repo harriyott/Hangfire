@@ -200,11 +200,13 @@ where j.Id = @jobId";
             _storage.UseConnection(connection =>
             {
                 connection.Execute(
-$@";merge [{_storage.SchemaName}].JobParameter with (holdlock) as Target
-using (VALUES (@jobId, @name, @value)) as Source (JobId, Name, Value) 
-on Target.JobId = Source.JobId AND Target.Name = Source.Name
-when matched then update set Value = Source.Value
-when not matched then insert (JobId, Name, Value) values (Source.JobId, Source.Name, Source.Value);",
+                    string.Format(@";UPDATE [{0}].JobParameter "
+                    + @"SET [Value] = @value "
+                    + @"WHERE JobId = @jobId AND [Name] = @name; "
+                    + @"IF @@ROWCOUNT = 0 "
+                    + @"INSERT INTO [HangFire].JobParameter (JobId, Name, Value) "
+                    + @"VALUES(@jobId, @name, @value);",
+                    _storage.GetSchemaName()),
                     new { jobId = id, name, value });
             });
         }
