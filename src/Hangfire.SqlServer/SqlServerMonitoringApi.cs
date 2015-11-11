@@ -495,8 +495,8 @@ where j.Id in @jobIds";
             string jobsSql = 
 $@"select * from (
   select j.*, s.Reason as StateReason, s.Data as StateData, row_number() over (order by j.Id desc) as row_num
-  from [{_storage.SchemaName}].Job j with (nolock, forceseek)
-  left join [{_storage.SchemaName}].State s with (nolock) on j.StateId = s.Id
+  from [{0}].Job j 
+  left join [{0}].State s on j.StateId = s.Id
   where j.StateName = @stateName
 ) as j where j.row_num between @start and @end";
 
