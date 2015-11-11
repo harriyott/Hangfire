@@ -96,12 +96,12 @@ OUTPUT DELETED.[Key], DELETED.[Value], DELETED.[ExpireAt] INTO @RecordsToAggrega
 
 SET NOCOUNT ON
 
+UPDATE [{0}].[AggregatedCounter]
 
-UPDATE [HangFire].[AggregatedCounter]
 SET 
 	[Value] = ac.[Value] + ra.[Value],
 	[ExpireAt] = (SELECT MAX([ExpireAt]) FROM (VALUES (ac.ExpireAt), (ra.[ExpireAt])) AS MaxExpireAt([ExpireAt]))
-FROM [HangFire].[AggregatedCounter] AS ac
+FROM [{0}].[AggregatedCounter] AS ac
 JOIN @RecordsToAggregate ra
 ON ac.[Key] = ra.[Key];
 
@@ -109,7 +109,7 @@ INSERT INTO [{0}].[AggregatedCounter]
 SELECT [Key], SUM([Value]) as [Value], MAX([ExpireAt]) AS [ExpireAt] 
 FROM @RecordsToAggregate 
 GROUP BY [Key]
-HAVING [Key] NOT IN (SELECT [Key] FROM [HangFire].[AggregatedCounter]);
+HAVING [Key] NOT IN (SELECT [Key] FROM [{0}].[AggregatedCounter]);
 
 COMMIT TRAN";
         }

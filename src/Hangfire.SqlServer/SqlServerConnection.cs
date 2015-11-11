@@ -204,7 +204,7 @@ where j.Id = @jobId";
                     + @"SET [Value] = @value "
                     + @"WHERE JobId = @jobId AND [Name] = @name; "
                     + @"IF @@ROWCOUNT = 0 "
-                    + @"INSERT INTO [HangFire].JobParameter (JobId, Name, Value) "
+                    + @"INSERT INTO [{0}].JobParameter (JobId, Name, Value) "
                     + @"VALUES(@jobId, @name, @value);",
                     _storage.GetSchemaName()),
                     new { jobId = id, name, value });
@@ -258,7 +258,7 @@ SET [Value] = @value
 WHERE [Key] = @key AND Field = @field;
 
 IF @@ROWCOUNT = 0
-INSERT INTO [HangFire].Hash ([Key], Field, Value)
+INSERT INTO [{0}].Hash ([Key], Field, Value)
 VALUES(@key, @field, @value);", _storage.GetSchemaName());
 
             _storage.UseTransaction((connection, transaction) =>
@@ -300,11 +300,13 @@ VALUES(@key, @field, @value);", _storage.GetSchemaName());
             _storage.UseConnection(connection =>
             {
                 connection.Execute(
-$@";merge [{_storage.SchemaName}].Server with (holdlock) as Target
-using (VALUES (@id, @data, @heartbeat)) as Source (Id, Data, Heartbeat)
-on Target.Id = Source.Id
-when matched then update set Data = Source.Data, LastHeartbeat = Source.Heartbeat
-when not matched then insert (Id, Data, LastHeartbeat) values (Source.Id, Source.Data, Source.Heartbeat);",
+                    string.Format(@";UPDATE [{0}].Server
+SET Data = @data, LastHeartbeat = @heartbeat
+WHERE [Id] = @id;
+
+IF @@ROWCOUNT = 0
+INSERT INTO [{0}].Server (Id, Data, LastHeartbeat)
+VALUES(@id, @data, @heartbeat);", _storage.GetSchemaName()),
                     new { id = serverId, data = JobHelper.ToJson(data), heartbeat = DateTime.UtcNow });
             });
         }
