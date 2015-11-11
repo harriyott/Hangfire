@@ -16,6 +16,7 @@ namespace Hangfire.SqlServer.Tests
 #pragma warning restore 618
             Assert.True(options.JobExpirationCheckInterval > TimeSpan.Zero);
             Assert.True(options.PrepareSchemaIfNecessary);
+            Assert.False(options.SqlServer2005Compatibility);
         }
 
         [Fact]

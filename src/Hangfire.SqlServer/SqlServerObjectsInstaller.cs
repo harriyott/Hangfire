@@ -33,10 +33,10 @@ namespace Hangfire.SqlServer
 
         public static void Install(DbConnection connection)
         {
-            Install(connection, null);
+            Install(connection, null, null);
         }
 
-        public static void Install(DbConnection connection, string schema)
+        public static void Install(DbConnection connection, string schema, ISqlServerSettings sqlServerSettings)
         {
             if (connection == null) throw new ArgumentNullException(nameof(connection));
 
@@ -56,6 +56,8 @@ namespace Hangfire.SqlServer
             script = script.Replace("$(HangFireSchema)", !string.IsNullOrWhiteSpace(schema) ? schema : Constants.DefaultSchema);
 
 #if NETFULL
+            script = sqlServerSettings.TransformScript(script);
+
             for (var i = 0; i < RetryAttempts; i++)
             {
                 try

@@ -65,17 +65,44 @@ namespace Hangfire.SqlServer
 
             _connectionString = GetConnectionString(nameOrConnectionString);
             _options = options;
-            
+
+            SetSqlServerVersionSettings(options);
+
+            if (IsConnectionString(nameOrConnectionString))
+            {
+                _connectionString = nameOrConnectionString;
+            }
+            else if (IsConnectionStringInConfiguration(nameOrConnectionString))
+            {
+                _connectionString = ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
+            }
+            else
+            {
+                throw new ArgumentException(
+                    string.Format("Could not find connection string with name '{0}' in application config file",
+                                  nameOrConnectionString));
+            }
+
             if (options.PrepareSchemaIfNecessary)
             {
                 using (var connection = CreateAndOpenConnection())
                 {
-                    SqlServerObjectsInstaller.Install(connection, options.SchemaName);
+                    SqlServerObjectsInstaller.Install(connection, options.SchemaName, SqlServerSettings);
                 }
             }
 
             InitializeQueueProviders();
         }
+
+        private void SetSqlServerVersionSettings(SqlServerStorageOptions options)
+        {
+            SqlServerSettings = options.SqlServer2005Compatibility
+                ? (ISqlServerSettings)new SqlServer2005Settings()
+                : new SqlServerDefaultSettings();
+        }
+
+        internal ISqlServerSettings SqlServerSettings { get; private set; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerStorage"/> class with
