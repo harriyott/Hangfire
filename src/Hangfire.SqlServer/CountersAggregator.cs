@@ -83,7 +83,6 @@ namespace Hangfire.SqlServer
 
         private string GetAggregationQuery(SqlServerStorage storage)
         {
-
             var aggregationQuery = _sqlServerSettings != null &&
                                    !string.IsNullOrEmpty(_sqlServerSettings.CountersAggregationSql)
                 ? _sqlServerSettings.CountersAggregationSql

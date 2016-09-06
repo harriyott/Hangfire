@@ -492,7 +492,6 @@ where j.Id in @jobIds";
             string stateName,
             Func<SqlJob, Job, Dictionary<string, string>, TDto> selector)
         {
-
             var forceSeek = _storage.SqlServerSettings != null
                 ? _storage.SqlServerSettings.WithForceSeekSql
                 : " with (forceseek) ";
