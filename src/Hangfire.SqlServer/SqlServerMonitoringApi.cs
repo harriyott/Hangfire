@@ -503,7 +503,7 @@ select * from (
   left join [{0}].State s on j.StateId = s.Id
   where j.StateName = @stateName
 ) as j where j.row_num between @start and @end
-", _storage.GetSchemaName(),
+", _storage.SchemaName,
 forceSeek);
 
             var jobs = connection.Query<SqlJob>(

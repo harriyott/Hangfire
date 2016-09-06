@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using HangFire.SqlServer.Settings;
 
 namespace Hangfire.SqlServer
 {

@@ -91,6 +91,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HangFire.SqlServer.Settings\HangFire.SqlServer.Settings.csproj">
+      <Project>{34A0A547-949F-43F0-AB09-63E252F67BBA}</Project>
+      <Name>HangFire.SqlServer.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\HangFire.Core\Hangfire.Core.csproj">
       <Project>{c995ea9e-56ee-4951-8260-d94260a7f4c2}</Project>
       <Name>Hangfire.Core</Name>

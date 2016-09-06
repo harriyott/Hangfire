@@ -91,6 +91,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HangFire.SqlServer.Settings\HangFire.SqlServer.Settings.csproj">
+      <Project>{34A0A547-949F-43F0-AB09-63E252F67BBA}</Project>
+      <Name>HangFire.SqlServer.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hangfire.Core\Hangfire.Core.NetStandard.csproj">
       <Project>{2a528f3a-5120-430a-b881-e265fa09abb5}</Project>
       <Name>Hangfire.Core.NetStandard</Name>

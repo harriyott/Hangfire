@@ -68,10 +68,7 @@
     <Compile Include="IPersistentJobQueue.cs" />
     <Compile Include="IPersistentJobQueueMonitoringApi.cs" />
     <Compile Include="IPersistentJobQueueProvider.cs" />
-    <Compile Include="ISqlServerSettings.cs" />
     <Compile Include="PersistentJobQueueProviderCollection.cs" />
-    <Compile Include="SqlServer2005Settings.cs" />
-    <Compile Include="SqlServerDefaultSettings.cs" />
     <Compile Include="SqlServerJobQueue.cs" />
     <Compile Include="SqlServerFetchedJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,6 +86,10 @@
     <Compile Include="SqlServerBootstrapperConfigurationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HangFire.SqlServer.Settings\HangFire.SqlServer.Settings.csproj">
+      <Project>{34A0A547-949F-43F0-AB09-63E252F67BBA}</Project>
+      <Name>HangFire.SqlServer.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hangfire.Core\Hangfire.Core.csproj">
       <Project>{C995EA9E-56EE-4951-8260-D94260A7F4C2}</Project>
       <Name>Hangfire.Core</Name>

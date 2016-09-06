@@ -211,7 +211,7 @@ where j.Id = @jobId";
                     @"when not matched then insert (JobId, Name, Value) values (Source.JobId, Source.Name, Source.Value);"
                     ;
                 connection.Execute(string.Format(sql,
-                    _storage.GetSchemaName()),
+                    _storage.SchemaName),
                     new { jobId = id, name, value });
             });
         }
@@ -268,7 +268,7 @@ on Target.[Key] = Source.[Key] and Target.Field = Source.Field
 when matched then update set Value = Source.Value
 when not matched then insert ([Key], Field, Value) values (Source.[Key], Source.Field, Source.Value);";
 
-            sql = string.Format(sql, _storage.GetSchemaName());
+            sql = string.Format(sql, _storage.SchemaName);
 
             _storage.UseTransaction((connection, transaction) =>
             {
@@ -290,7 +290,7 @@ when not matched then insert ([Key], Field, Value) values (Source.[Key], Source.
                     : " with (forceseek) ";
                 var result = connection.Query<SqlHash>(
                     string.Format("select Field, Value from [{0}].Hash {1} where [Key] = @key", 
-                    _storage.GetSchemaName(),
+                    _storage.SchemaName,
                     forceSeek),
                     new { key })
                     .ToDictionary(x => x.Field, x => x.Value);
@@ -325,7 +325,7 @@ when not matched then insert ([Key], Field, Value) values (Source.[Key], Source.
                     @"when not matched then insert (Id, Data, LastHeartbeat) values (Source.Id, Source.Data, Source.Heartbeat);";
 
                     connection.Execute(
-                        string.Format(sql, _storage.GetSchemaName()),
+                        string.Format(sql, _storage.SchemaName),
                         new { id = serverId, data = JobHelper.ToJson(data), heartbeat = DateTime.UtcNow });
             });
         }

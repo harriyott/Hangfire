@@ -19,6 +19,7 @@ using System.Threading;
 using Dapper;
 using Hangfire.Logging;
 using Hangfire.Server;
+using HangFire.SqlServer.Settings;
 
 namespace Hangfire.SqlServer
 {
@@ -115,7 +116,7 @@ WHEN NOT MATCHED THEN INSERT ([Key], [Value], [ExpireAt]) VALUES ([Source].[Key]
 
 COMMIT TRAN";
 
-            return string.Format(aggregationQuery, storage.GetSchemaName());
+            return string.Format(aggregationQuery, storage.SchemaName);
         }
     }
 }

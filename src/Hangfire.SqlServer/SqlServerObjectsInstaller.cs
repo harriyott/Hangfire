@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using Dapper;
 using Hangfire.Logging;
+using HangFire.SqlServer.Settings;
 
 namespace Hangfire.SqlServer
 {

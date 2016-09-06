@@ -32,6 +32,7 @@ using Hangfire.Dashboard;
 using Hangfire.Logging;
 using Hangfire.Server;
 using Hangfire.Storage;
+using HangFire.SqlServer.Settings;
 
 namespace Hangfire.SqlServer
 {
@@ -67,21 +68,6 @@ namespace Hangfire.SqlServer
             _options = options;
 
             SetSqlServerVersionSettings(options);
-
-            if (IsConnectionString(nameOrConnectionString))
-            {
-                _connectionString = nameOrConnectionString;
-            }
-            else if (IsConnectionStringInConfiguration(nameOrConnectionString))
-            {
-                _connectionString = ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
-            }
-            else
-            {
-                throw new ArgumentException(
-                    string.Format("Could not find connection string with name '{0}' in application config file",
-                                  nameOrConnectionString));
-            }
 
             if (options.PrepareSchemaIfNecessary)
             {

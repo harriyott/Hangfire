@@ -197,7 +197,7 @@ on Target.[Key] = Source.[Key] and Target.Value = Source.Value
 when matched then update set Score = Source.Score
 when not matched then insert ([Key], Value, Score) values (Source.[Key], Source.Value, Source.Score);";
 
-            addSql = string.Format(addSql, _storage.GetSchemaName());
+            addSql = string.Format(addSql, _storage.SchemaName);
 
             AcquireSetLock();
             QueueCommand((connection, transaction) => connection.Execute(
@@ -267,7 +267,7 @@ on Target.[Key] = Source.[Key] and Target.Field = Source.Field
 when matched then update set Value = Source.Value
 when not matched then insert ([Key], Field, Value) values (Source.[Key], Source.Field, Source.Value);";
 
-            sql = string.Format(sql, _storage.GetSchemaName());
+            sql = string.Format(sql, _storage.SchemaName);
 
             AcquireHashLock();
             QueueCommand((connection, transaction) => connection.Execute(

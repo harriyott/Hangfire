@@ -1,4 +1,4 @@
-﻿namespace Hangfire.SqlServer
+﻿namespace HangFire.SqlServer.Settings
 {
     public interface ISqlServerSettings
     {
