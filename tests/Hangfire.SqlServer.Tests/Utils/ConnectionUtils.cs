@@ -12,7 +12,7 @@ namespace Hangfire.SqlServer.Tests
         private const string MasterDatabaseName = "master";
         private const string DefaultDatabaseName = @"Hangfire.SqlServer.Tests";
         private const string DefaultConnectionStringTemplate
-            = @"Server=.;Database={0};Trusted_Connection=True;";
+            = @"Server=.\SQLExpress;Initial Catalog={0};Integrated Security=True;";
 
         public static string GetDatabaseName()
         {

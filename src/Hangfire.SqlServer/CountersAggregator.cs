@@ -46,7 +46,7 @@ namespace Hangfire.SqlServer
 
             _storage = storage;
             _interval = interval;
-            _sqlServerSettings = sqlServerSettings;
+            _sqlServerSettings = sqlServerSettings ?? storage.SqlServerSettings;
         }
 
         public void Execute(CancellationToken cancellationToken)
@@ -98,7 +98,7 @@ DECLARE @RecordsToAggregate TABLE
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED
 BEGIN TRAN
 
-DELETE TOP (@count) [{storage.SchemaName}].[Counter] with (readpast, xlock, rowlock)
+DELETE TOP (@count) [{0}].[Counter] with (readpast, xlock, rowlock)
 OUTPUT DELETED.[Key], DELETED.[Value], DELETED.[ExpireAt] INTO @RecordsToAggregate
 
 SET NOCOUNT ON

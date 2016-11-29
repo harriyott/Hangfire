@@ -42,22 +42,16 @@ HAVING [Key] NOT IN (SELECT [Key] FROM [{0}].[AggregatedCounter]);
 
 COMMIT TRAN"; } }
 
-        public string SetJobParameterSql
-        {
-            get
-            {
-                return @";BEGIN TRANSACTION;"
-                  + @"UPDATE [{0}].JobParameter "
-                  + @"SET [Value] = @value "
-                  + @"WHERE JobId = @jobId AND [Name] = @name; "
-                  + @"IF @@ROWCOUNT = 0 "
-                  + @"INSERT INTO [{0}].JobParameter (JobId, Name, Value) "
-                  + @"VALUES(@jobId, @name, @value); "
-                  + @"COMMIT TRANSACTION;";
-            }
-        }
+        public string SetJobParameterSql => @";BEGIN TRANSACTION;"
+                                            + @"UPDATE [{0}].JobParameter "
+                                            + @"SET [Value] = @value "
+                                            + @"WHERE JobId = @jobId AND [Name] = @name; "
+                                            + @"IF @@ROWCOUNT = 0 "
+                                            + @"INSERT INTO [{0}].JobParameter (JobId, Name, Value) "
+                                            + @"VALUES(@jobId, @name, @value); "
+                                            + @"COMMIT TRANSACTION;";
 
-        public string SetRangeInHashSql { get { return @"
+        public string SetRangeInHashSql => @"
 ;BEGIN TRANSACTION;
 UPDATE [{0}].Hash
 SET [Value] = @value
@@ -66,7 +60,7 @@ WHERE [Key] = @key AND Field = @field;
 IF @@ROWCOUNT = 0
 INSERT INTO [{0}].Hash ([Key], Field, Value)
 VALUES(@key, @field, @value);
-COMMIT TRANSACTION;"; } }
+COMMIT TRANSACTION;";
 
         public string AddToSetSql { get { return @"
 ;BEGIN TRANSACTION;

@@ -71,8 +71,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CountersAggregator2005Facts.cs" />
     <Compile Include="CountersAggregatorFacts.cs" />
     <Compile Include="PersistentJobQueueProviderCollectionFacts.cs" />
+    <Compile Include="SqlServer2005ConnectionFacts.cs" />
     <Compile Include="SqlServer2005Facts.cs" />
     <Compile Include="SqlServerConnectionFacts.cs" />
     <Compile Include="ExpirationManagerFacts.cs" />

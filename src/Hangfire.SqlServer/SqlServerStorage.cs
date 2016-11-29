@@ -103,6 +103,20 @@ namespace Hangfire.SqlServer
             _existingConnection = existingConnection;
             _options = new SqlServerStorageOptions();
 
+            SetSqlServerVersionSettings(_options);
+
+            InitializeQueueProviders();
+        }
+
+        public SqlServerStorage([NotNull] DbConnection existingConnection, SqlServerStorageOptions serverStorageOptions)
+        {
+            if (existingConnection == null) throw new ArgumentNullException(nameof(existingConnection));
+
+            _existingConnection = existingConnection;
+            _options = serverStorageOptions;
+
+            SetSqlServerVersionSettings(_options);
+
             InitializeQueueProviders();
         }
 

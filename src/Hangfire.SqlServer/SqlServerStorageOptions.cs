@@ -41,7 +41,7 @@ namespace Hangfire.SqlServer
             DashboardJobListLimit = 50000;
             _schemaName = Constants.DefaultSchema;
             TransactionTimeout = TimeSpan.FromMinutes(1);
-            SqlServer2005Compatibility = true;
+            SqlServer2005Compatibility = false;
         }
 
         public IsolationLevel? TransactionIsolationLevel { get; set; }

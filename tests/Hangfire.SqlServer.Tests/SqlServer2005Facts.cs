@@ -10,7 +10,10 @@ namespace Hangfire.SqlServer.Tests
         [Fact]
         public void Ctor_CreatesDefaultSettings()
         {
-            var options = new SqlServerStorageOptions();
+            var options = new SqlServerStorageOptions
+            {
+                SqlServer2005Compatibility = false
+            };
             var storage = new SqlServerStorage(ConnectionUtils.GetConnectionString(), options);
             Assert.Equal(typeof(SqlServerDefaultSettings), storage.SqlServerSettings.GetType());
         }
@@ -133,10 +136,8 @@ namespace Hangfire.SqlServer.Tests
             {
                 if (stream == null)
                 {
-                    throw new InvalidOperationException(String.Format(
-                        "Requested resource `{0}` was not found in the assembly `{1}`.",
-                        resourceName,
-                        assembly));
+                    throw new InvalidOperationException(
+                        $"Requested resource `{resourceName}` was not found in the assembly `{assembly}`.");
                 }
 
                 using (var reader = new StreamReader(stream))
