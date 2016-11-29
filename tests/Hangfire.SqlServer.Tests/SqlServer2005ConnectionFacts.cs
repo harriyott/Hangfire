@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
@@ -9,6 +10,7 @@ namespace Hangfire.SqlServer.Tests
 {
     public class SqlServer2005ConnectionFacts
     {
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Mock<IPersistentJobQueue> _queue;
         private readonly PersistentJobQueueProviderCollection _providers;
 
@@ -149,5 +151,54 @@ select scope_identity() as Id";
                 Assert.Equal((string)null, parameter.Value);
             });
         }
+
+        [Fact, CleanDatabase]
+        public void SetRangeInHash_ThrowsAnException_WhenKeyIsNull()
+        {
+            UseConnection(connection =>
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => connection.SetRangeInHash(null, new Dictionary<string, string>()));
+
+                Assert.Equal("key", exception.ParamName);
+            });
+        }
+
+        [Fact, CleanDatabase]
+        public void SetRangeInHash_ThrowsAnException_WhenKeyValuePairsArgumentIsNull()
+        {
+            UseConnection(connection =>
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => connection.SetRangeInHash("some-hash", null));
+
+                Assert.Equal("keyValuePairs", exception.ParamName);
+            });
+        }
+
+        [Fact, CleanDatabase]
+        public void SetRangeInHash_MergesAllRecords()
+        {
+            UseConnections((sql, connection) =>
+            {
+                connection.SetRangeInHash("some-hash", new Dictionary<string, string>
+                {
+                    { "Key1", "Value1" },
+                    { "Key2", "Value2" }
+                });
+
+                var result = sql.Query(
+                    "select * from HangFire.Hash where [Key] = @key",
+                    new { key = "some-hash" })
+                    .ToDictionary(x => (string)x.Field, x => (string)x.Value);
+
+                Assert.Equal("Value1", result["Key1"]);
+                Assert.Equal("Value2", result["Key2"]);
+            });
+        }
+
+
     }
 }

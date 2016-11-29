@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using HangFire.SqlServer.Settings;
 
-namespace Hangfire.SqlServer
+namespace HangFire.SqlServer.Settings
 {
     public class SqlServer2005Settings : ISqlServerSettings
     {
@@ -10,7 +9,7 @@ namespace Hangfire.SqlServer
             return Regex.Replace(script, @"\[datetime2\]\([0-9]\)", "[datetime]");
         }
 
-        public string CountersAggregationSql { get { return @"
+        public string CountersAggregationSql => @"
 DECLARE @RecordsToAggregate TABLE
 (
 	[Key] NVARCHAR(100) NOT NULL,
@@ -40,7 +39,7 @@ FROM @RecordsToAggregate
 GROUP BY [Key]
 HAVING [Key] NOT IN (SELECT [Key] FROM [{0}].[AggregatedCounter]);
 
-COMMIT TRAN"; } }
+COMMIT TRAN";
 
         public string SetJobParameterSql => @";BEGIN TRANSACTION;"
                                             + @"UPDATE [{0}].JobParameter "
@@ -62,7 +61,7 @@ INSERT INTO [{0}].Hash ([Key], Field, Value)
 VALUES(@key, @field, @value);
 COMMIT TRANSACTION;";
 
-        public string AddToSetSql { get { return @"
+        public string AddToSetSql => @"
 ;BEGIN TRANSACTION;
 UPDATE [{0}].[Set]
 SET Score = @score
@@ -71,9 +70,9 @@ WHERE [Key] = @key AND Value = @value;
 IF @@ROWCOUNT = 0
 INSERT INTO [{0}].[Set] ([Key], Score, Value)
 VALUES(@key, @score, @value);
-COMMIT TRANSACTION;"; } }
+COMMIT TRANSACTION;";
 
-        public string SetRangeInHashWriteOnlySql { get { return @"
+        public string SetRangeInHashWriteOnlySql => @"
 ;BEGIN TRANSACTION;
 UPDATE [{0}].Hash
 SET [Value] = @value
@@ -82,9 +81,9 @@ WHERE [Key] = @key AND Field = @field;
 IF @@ROWCOUNT = 0
 INSERT INTO [{0}].Hash ([Key], Field, Value)
 VALUES(@key, @field, @value);
-COMMIT TRANSACTION;"; } }
+COMMIT TRANSACTION;";
 
-        public string AnnounceServerSql { get { return @"
+        public string AnnounceServerSql => @"
 ;BEGIN TRANSACTION;
 ;UPDATE [{0}].Server
 SET Data = @data, LastHeartbeat = @heartbeat
@@ -93,7 +92,7 @@ WHERE [Id] = @id;
 IF @@ROWCOUNT = 0
 INSERT INTO [{0}].Server (Id, Data, LastHeartbeat)
 VALUES(@id, @data, @heartbeat);
-COMMIT TRANSACTION;"; } }
+COMMIT TRANSACTION;";
 
         public string WithForceSeekSql => "";
     }

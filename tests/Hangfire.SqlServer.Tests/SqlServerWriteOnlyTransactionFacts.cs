@@ -12,6 +12,76 @@ using Xunit;
 
 namespace Hangfire.SqlServer.Tests
 {
+    public class SqlServer2005WriteOnlyTransactionFacts
+    {
+        private readonly PersistentJobQueueProviderCollection _queueProviders;
+
+        public SqlServer2005WriteOnlyTransactionFacts()
+        {
+            var defaultProvider = new Mock<IPersistentJobQueueProvider>();
+            defaultProvider.Setup(x => x.GetJobQueue())
+                .Returns(new Mock<IPersistentJobQueue>().Object);
+
+            _queueProviders = new PersistentJobQueueProviderCollection(defaultProvider.Object);
+        }
+
+        [Fact, CleanDatabase]
+        public void AddToSet_WithScore_AddsARecordWithScore_WhenBothKeyAndValueAreNotExist()
+        {
+            UseConnection(sql =>
+            {
+                Commit(sql, x => x.AddToSet("my-key", "my-value", 3.2));
+
+                var record = sql.Query("select * from HangFire.[Set]").Single();
+
+                Assert.Equal("my-key", record.Key);
+                Assert.Equal("my-value", record.Value);
+                Assert.Equal(3.2, record.Score, 3);
+            });
+        }
+
+        [Fact, CleanDatabase]
+        public void AddToSet_WithScore_UpdatesAScore_WhenBothKeyAndValueAreExist()
+        {
+            UseConnection(sql =>
+            {
+                Commit(sql, x =>
+                {
+                    x.AddToSet("my-key", "my-value");
+                    x.AddToSet("my-key", "my-value", 3.2);
+                });
+
+                var record = sql.Query("select * from HangFire.[Set]").Single();
+
+                Assert.Equal(3.2, record.Score, 3);
+            });
+        }
+
+        private static void UseConnection(Action<SqlConnection> action)
+        {
+            using (var connection = ConnectionUtils.CreateConnection())
+            {
+                action(connection);
+            }
+        }
+
+        private void Commit(
+            SqlConnection connection,
+            Action<SqlServerWriteOnlyTransaction> action)
+        {
+            var storage = new Mock<SqlServerStorage>(connection, new SqlServerStorageOptions
+            {
+                SqlServer2005Compatibility = true
+            });
+            storage.Setup(x => x.QueueProviders).Returns(_queueProviders);
+
+            using (var transaction = new SqlServerWriteOnlyTransaction(storage.Object))
+            {
+                action(transaction);
+                transaction.Commit();
+            }
+        }
+    }
     public class SqlServerWriteOnlyTransactionFacts
     {
         private readonly PersistentJobQueueProviderCollection _queueProviders;

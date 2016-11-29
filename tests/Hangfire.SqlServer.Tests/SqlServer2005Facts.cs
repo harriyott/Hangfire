@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using HangFire.SqlServer.Settings;
 using Xunit;
 
 namespace Hangfire.SqlServer.Tests
