@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
+using Hangfire.Server;
 using Moq;
 using Xunit;
 
@@ -199,6 +200,35 @@ select scope_identity() as Id";
             });
         }
 
+        [Fact, CleanDatabase]
+        public void AnnounceServer_CreatesOrUpdatesARecord()
+        {
+            UseConnections((sql, connection) =>
+            {
+                var context1 = new ServerContext
+                {
+                    Queues = new[] { "critical", "default" },
+                    WorkerCount = 4
+                };
+                connection.AnnounceServer("server", context1);
 
+                var server = sql.Query("select * from HangFire.Server").Single();
+                Assert.Equal("server", server.Id);
+                Assert.True(((string)server.Data).StartsWith(
+                    "{\"WorkerCount\":4,\"Queues\":[\"critical\",\"default\"],\"StartedAt\":"),
+                    server.Data);
+                Assert.NotNull(server.LastHeartbeat);
+
+                var context2 = new ServerContext
+                {
+                    Queues = new[] { "default" },
+                    WorkerCount = 1000
+                };
+                connection.AnnounceServer("server", context2);
+                var sameServer = sql.Query("select * from HangFire.Server").Single();
+                Assert.Equal("server", sameServer.Id);
+                Assert.Contains("1000", sameServer.Data);
+            });
+        }
     }
 }

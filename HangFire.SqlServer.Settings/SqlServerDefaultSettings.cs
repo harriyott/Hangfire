@@ -1,6 +1,4 @@
-﻿using HangFire.SqlServer.Settings;
-
-namespace Hangfire.SqlServer
+﻿namespace HangFire.SqlServer.Settings
 {
     public class SqlServerDefaultSettings : ISqlServerSettings
     {
@@ -9,12 +7,12 @@ namespace Hangfire.SqlServer
             return script;
         }
 
-        public string CountersAggregationSql { get { return null; } }
-        public string SetJobParameterSql { get { return null; } }
-        public string SetRangeInHashSql { get { return null; } }
-        public string AddToSetSql { get { return null; } }
-        public string SetRangeInHashWriteOnlySql { get { return null; } }
-        public string AnnounceServerSql { get { return null; } }
-        public string WithForceSeekSql { get { return " with (forceseek) "; } }
+        public string CountersAggregationSql => null;
+        public string SetJobParameterSql => null;
+        public string SetRangeInHashSql => null;
+        public string AddToSetSql => null;
+        public string SetRangeInHashWriteOnlySql => null;
+        public string AnnounceServerSql => null;
+        public string WithForceSeekSql => " with (forceseek) ";
     }
 }

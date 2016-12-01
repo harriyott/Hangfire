@@ -315,8 +315,8 @@ when not matched then insert ([Key], Field, Value) values (Source.[Key], Source.
             {
                 var sql =
                     _storage.SqlServerSettings != null &&
-                    !string.IsNullOrEmpty(_storage.SqlServerSettings.SetRangeInHashSql)
-                        ? _storage.SqlServerSettings.SetRangeInHashSql
+                    !string.IsNullOrEmpty(_storage.SqlServerSettings.AnnounceServerSql)
+                        ? _storage.SqlServerSettings.AnnounceServerSql
                         : @";merge [{0}].Server with (holdlock) as Target "
                     + @"using (VALUES (@id, @data, @heartbeat)) as Source (Id, Data, Heartbeat) "
                     + @"on Target.Id = Source.Id "
